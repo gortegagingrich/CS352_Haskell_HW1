@@ -1,7 +1,7 @@
 import Data.List
 
 {- 
-CS352 Spring 2017 Student Name: 
+CS352 Spring 2017 Student Name: Gabriel Ortega-Gingrich
 -}
 
 {-
@@ -148,8 +148,6 @@ testAnd = ((T &&& F) == F)
 
 testPart1 = testNot && testEquiv && testImply && testOr && testAnd
 
-
-
 {- P A R T 2: Create an evaluator for TExpTree's 
 --TODO Define the type TExpTree, using the constructors L, N, A, O, E, I
 L for Ternary literals (i.e. T, F or M)
@@ -160,6 +158,14 @@ E for a node representing the infix Equivalence
 I for a node representing the infix Implication
 It will be convenient to have the new type derive from the classes Show and Eq
 -}
+data TExpTree a = L a
+              | N (TExpTree a)
+              | A (TExpTree a) (TExpTree a)
+              | O (TExpTree a) (TExpTree a)
+              | E (TExpTree a) (TExpTree a)
+              | I (TExpTree a) (TExpTree a)
+    deriving (Show, Eq)
+
 
 {- TODO create a function evalT that takes an expression tree and returns the value 
 of the expresion.

@@ -70,8 +70,8 @@ infix 1 <=>
  | otherwise = F
 
 -- The implication operator has the same precedence as equivalence
---TODO Implement the infix operator ==> (implication)
 infix 1 ==> 
+--TODO Implement the infix operator ==> (implication)
 (==>) :: Ternary -> Ternary -> Ternary
 (==>) a b
  | a == T = b
@@ -79,8 +79,8 @@ infix 1 ==>
  | otherwise = T
 
 -- The Or operator is just above equivalence in precedence
---TODO Implement the infix operator ||| (Or)
 infix 2 ||| 
+--TODO Implement the infix operator ||| (Or)
 (|||) :: Ternary -> Ternary -> Ternary
 (|||) a b
  | a == T = T
@@ -89,13 +89,12 @@ infix 2 |||
 
 -- The And operator is just above Or in precedence
 infix 3 &&&
+--TODO Implement the infix operator &&& (And)
 (&&&) :: Ternary -> Ternary -> Ternary
 (&&&) a b
  | a == T && b == T = T
  | a == F || b == F = F
  | otherwise = M
---TODO Implement the infix operator &&& (And)
-
 
 -- This completes part 1. You can use the following functions to test your implementation
 testNot :: Bool 
@@ -160,20 +159,27 @@ It will be convenient to have the new type derive from the classes Show and Eq
 -}
 data TExpTree a = L a
               | N (TExpTree a)
-              | A (TExpTree a) (TExpTree a)
-              | O (TExpTree a) (TExpTree a)
-              | E (TExpTree a) (TExpTree a)
-              | I (TExpTree a) (TExpTree a)
-    deriving (Show, Eq)
+              | A ((TExpTree a),(TExpTree a))
+              | O ((TExpTree a),(TExpTree a))
+              | E ((TExpTree a),(TExpTree a))
+              | I ((TExpTree a),(TExpTree a))
+    deriving (Show)
 
 
 {- TODO create a function evalT that takes an expression tree and returns the value 
 of the expresion.
 -}
+evalT :: TExpTree Ternary -> Ternary
+evalT (L a) = a
+evalT (N a) = n't (evalT a)
+evalT (A (a,b)) = (evalT a) &&& (evalT b)
+evalT (O (a,b)) = (evalT a) ||| (evalT b)
+evalT (E (a,b)) = (evalT a) <=> (evalT b)
+evalT (I (a,b)) = (evalT a) ==> (evalT b)
 
 
 -- This completes part 2. You can use the following functions to test your implementation
-{-
+
 testEvalT :: Bool
 testEvalT = evalT (O (L T,O (N (L T),E (L T,L M)))) == T
           && evalT (O (L F,O (N (L F),E (L F,L M)))) == T
@@ -181,4 +187,4 @@ testEvalT = evalT (O (L T,O (N (L T),E (L T,L M)))) == T
           && evalT (O (L M,N (L M))) == M
           && evalT (A (L F, L M)) == F 
           && evalT (O (L T,O (N (L F),E (L M,I (L M,L T))))) == T 
--}
+          
